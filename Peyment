@@ -1,0 +1,229 @@
+# Personal-peyment-
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>PERSONAL পেমেন্ট</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #0d0d0d;
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px;
+      color: red;
+      text-shadow: 0 0 10px red;
+      margin-bottom: 20px;
+    }
+    .method-btn {
+      background-color: #222;
+      border: 2px solid red;
+      color: white;
+      padding: 12px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 8px red;
+      transition: 0.3s;
+    }
+    .method-btn:hover {
+      box-shadow: 0 0 15px red;
+      transform: scale(1.05);
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid red;
+      width: 250px;
+      background-color: #111;
+      color: white;
+      box-shadow: 0 0 5px red;
+      margin-bottom: 10px;
+    }
+    .submit-btn, .copy-btn, .help-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 0 8px red;
+      margin-top: 10px;
+    }
+    .number-box {
+      margin-top: 20px;
+      font-size: 20px;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 10px red;
+    }
+    .status {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #ffdddd;
+      min-height: 20px;
+    }
+    .guide {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .guide h2 {
+      color: red;
+      text-shadow: 0 0 8px red;
+    }
+    .guide ol {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #ffdddd;
+    }
+    .helpline-side {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background-color: #111;
+      border: 2px solid red;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px red;
+      z-index: 999;
+      width: 220px;
+      text-align: center;
+    }
+    .helpline-side h3 {
+      color: red;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px red;
+    }
+    .helpline-side p {
+      font-size: 14px;
+      color: #ffdddd;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+      .helpline-side {
+        position: static;
+        margin-top: 30px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PERSONAL পেমেন্ট</h1>
+
+  <button class="method-btn" onclick="selectMethod('bKash')">bKash</button>
+  <button class="method-btn" onclick="selectMethod('Nagad')">Nagad</button>
+
+  <div id="paymentSection"></div>
+  <div class="status" id="status"></div>
+
+  <div class="helpline-side">
+    <h3>🆘 হেল্পলাইন</h3>
+    <p>সমস্যায় পড়লে এখানে ক্লিক করুন</p>
+    <button class="help-btn" onclick="openHelp()">📞 হেল্প লাগবে</button>
+  </div>
+
+  <script>
+    const paymentNumber = localStorage.getItem("paymentNumber") || "01940559407";
+    const helpLink = localStorage.getItem("helplineLink") || "https://wa.me/message/WV3OMSTLE6TGJ1";
+    let selectedMethod = '';
+
+    function selectMethod(method) {
+      selectedMethod = method;
+      document.getElementById('paymentSection').innerHTML = `
+        <div class="status">⏳ PERSONAL পেমেন্ট লোড হচ্ছে...</div>
+      `;
+      document.getElementById('status').innerText = '';
+
+      setTimeout(() => {
+        document.getElementById('paymentSection').innerHTML = `
+          <div>
+            <p>আপনি কত টাকা পাঠিয়েছেন?</p>
+            <input type="number" id="amountInput" placeholder="যেমন: 100">
+            <br>
+            <button class="submit-btn" onclick="showPaymentDetails()">➡️ এগিয়ে যান</button>
+          </div>
+        `;
+      }, 1000);
+    }
+
+    function showPaymentDetails() {
+      const amount = document.getElementById('amountInput').value.trim();
+      if (amount === "") {
+        document.getElementById('status').innerText = "⚠️ দয়া করে টাকার পরিমাণ দিন!";
+        return;
+      }
+
+      document.getElementById('paymentSection').innerHTML = `
+        <div class="status">⏳ পেমেন্ট তথ্য প্রস্তুত হচ্ছে...</div>
+      `;
+      setTimeout(() => {
+        document.getElementById('paymentSection').innerHTML = `
+          <div class="number-box">
+            ${selectedMethod} নাম্বার: <strong id="payNumber">${paymentNumber}</strong>
+            <button class="copy-btn" onclick="copyNumber()">📋 কপি করুন</button>
+          </div>
+          <div>
+            <p style="margin-top:20px;">যে নাম্বার থেকে টাকা পাঠিয়েছেন:</p>
+            <input type="text" id="senderNumber" placeholder="017XXXXXXXX">
+
+            <div class="guide">
+              <h2>💡 কিভাবে টাকা পাঠাবেন:</h2>
+              <ol>
+                <li>আপনার <strong>${selectedMethod}</strong> অ্যাপ খুলুন</li>
+                <li><strong>Send Money</strong> অপশন সিলেক্ট করুন</li>
+                <li>নাম্বার দিন: <span style="color: #fff; font-weight: bold;">${paymentNumber}</span></li>
+                <li>টাকার পরিমাণ দিন (যেমন: ${amount}৳)</li>
+                <li>PIN দিয়ে পেমেন্ট কনফার্ম করুন</li>
+              </ol>
+            </div>
+
+            <button class="submit-btn" onclick="submitPayment()">✅ সাবমিট করুন</button>
+          </div>
+        `;
+        document.getElementById('status').innerText = '';
+      }, 1000);
+    }
+
+    function copyNumber() {
+      const number = document.getElementById('payNumber').innerText;
+      navigator.clipboard.writeText(number).then(() => {
+        document.getElementById('status').innerText = "✅ নাম্বার কপি হয়েছে!";
+      });
+    }
+
+    function submitPayment() {
+      const sender = document.getElementById('senderNumber').value.trim();
+      if (!/^01\d{9}$/.test(sender)) {
+        document.getElementById('status').innerText = "⚠️ দয়া করে ০১ দিয়ে শুরু হওয়া ১১ ডিজিটের নাম্বার দিন!";
+        return;
+      }
+
+      document.getElementById('status').innerText = "⏳ যাচাই করা হচ্ছে...";
+      setTimeout(() => {
+        window.location.href = "https://wa.me/message/WV3OMSTLE6TGJ1";
+      }, 1500);
+    }
+
+    function openHelp() {
+      window.open(helpLink, "_blank");
+    }
+  </script>
+
+</body>
+</html>
