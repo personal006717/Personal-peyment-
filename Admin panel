@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <title>PERSONAL Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:'Orbitron',sans-serif;background:#0d0d0d;color:#fff;padding:24px}
+    h1{color:#ff4d4d;text-shadow:0 0 8px #ff4d4d}
+    .card{background:#111;border:1px solid rgba(255,0,0,0.08);padding:18px;border-radius:10px;margin-bottom:14px}
+    label{display:block;margin:8px 0 6px;color:#ffdddd}
+    input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid #ff4d4d;background:#0b0b0b;color:#fff}
+    .row{display:flex;gap:8px;align-items:center}
+    .btn{background:#ff4d4d;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;color:#ffdddd;margin-top:8px}
+    .note{color:#ffb3b3;font-size:13px;margin-top:6px}
+  </style>
+</head>
+<body>
+  <h1>PERSONAL Admin Panel</h1>
+
+  <div class="card">
+    <label>🔢 Payment Number (Bangladesh format, 01xxxxxxxxx)</label>
+    <div class="row">
+      <input id="paymentNumber" type="text" placeholder="e.g. 01940559407" />
+      <button class="btn" onclick="savePaymentNumber()">Save</button>
+    </div>
+    <div class="note" id="pnNote"></div>
+  </div>
+
+  <div class="card">
+    <label>🔗 WhatsApp Redirect Link (full link or base wa.me link)</label>
+    <div class="row">
+      <input id="whatsappLink" type="text" placeholder="e.g. https://wa.me/8801912345678 or https://wa.me/message/XXXX" />
+      <button class="btn" onclick="saveWhatsAppLink()">Save</button>
+    </div>
+    <div class="note" id="wlNote"></div>
+  </div>
+
+  <div class="card">
+    <label>🆘 Helpline Link (WhatsApp or any help URL)</label>
+    <div class="row">
+      <input id="helplineLink" type="text" placeholder="e.g. https://wa.me/message/XXXX" />
+      <button class="btn" onclick="saveHelplineLink()">Save</button>
+    </div>
+    <div class="note" id="hlNote"></div>
+  </div>
+
+  <div class="card">
+    <button class="btn" onclick="resetDefaults()">Reset to Defaults</button>
+    <span style="margin-left:12px" class="small">Reset clears stored keys (localStorage)</span>
+  </div>
+
+  <script>
+    const DEFAULT_PAYMENT = '01940559407';
+    const DEFAULT_WA = 'https://wa.me/message/WV3OMSTLE6TGJ1';
+    const DEFAULT_HELP = 'https://wa.me/message/WV3OMSTLE6TGJ1';
+
+    // init: load current stored values into inputs
+    (function initAdmin(){
+      document.getElementById('paymentNumber').value = localStorage.getItem('paymentNumber') || DEFAULT_PAYMENT;
+      document.getElementById('whatsappLink').value = localStorage.getItem('whatsappLink') || DEFAULT_WA;
+      document.getElementById('helplineLink').value = localStorage.getItem('helplineLink') || DEFAULT_HELP;
+      updateNotes();
+    })();
+
+    function updateNotes(){
+      document.getElementById('pnNote').innerText = 'Current saved: ' + (localStorage.getItem('paymentNumber') || DEFAULT_PAYMENT);
+      document.getElementById('wlNote').innerText = 'Current saved: ' + (localStorage.getItem('whatsappLink') || DEFAULT_WA);
+      document.getElementById('hlNote').innerText = 'Current saved: ' + (localStorage.getItem('helplineLink') || DEFAULT_HELP);
+    }
+
+    function savePaymentNumber(){
+      const v = document.getElementById('paymentNumber').value.trim();
+      if(!/^01\d{9}$/.test(v)){
+        alert('দয়া করে সঠিক বাংলাদেশি মোবাইল নাম্বার দিন (01xxxxxxxxx)৷');
+        return;
+      }
+      localStorage.setItem('paymentNumber', v);
+      updateNotes();
+      flash('pnNote','Saved ✓');
+    }
+
+    function saveWhatsAppLink(){
+      const v = document.getElementById('whatsappLink').value.trim();
+      if(!v){
+        alert('লিংক খালি দেওয়া যাবে না');
+        return;
+      }
+      // basic validation: must start with https://wa.me or https://
+      if(!/^https?:\/\//.test(v)){
+        alert('লিংক অবশ্যই https:// দিয়ে শুরু করবে');
+        return;
+      }
+      localStorage.setItem('whatsappLink', v);
+      updateNotes();
+      flash('wlNote','Saved ✓');
+    }
+
+    function saveHelplineLink(){
+      const v = document.getElementById('helplineLink').value.trim();
+      if(!v){
+        alert('লিংক খালি দেওয়া যাবে না');
+        return;
+      }
+      if(!/^https?:\/\//.test(v)){
+        alert('লিংক অবশ্যই https:// দিয়ে শুরু করবে');
+        return;
+      }
+      localStorage.setItem('helplineLink', v);
+      updateNotes();
+      flash('hlNote','Saved ✓');
+    }
+
+    function resetDefaults(){
+      if(!confirm('Reset করে ডিফল্ট সেটিং এ ফিরিয়ে আনতে চাও?')) return;
+      localStorage.removeItem('paymentNumber');
+      localStorage.removeItem('whatsappLink');
+      localStorage.removeItem('helplineLink');
+      document.getElementById('paymentNumber').value = DEFAULT_PAYMENT;
+      document.getElementById('whatsappLink').value = DEFAULT_WA;
+      document.getElementById('helplineLink').value = DEFAULT_HELP;
+      updateNotes();
+      alert('Reset complete');
+    }
+
+    function flash(id, text){
+      const el = document.getElementById(id);
+      const prev = el.innerText;
+      el.innerText = text;
+      setTimeout(()=> el.innerText = prev, 1200);
+    }
+  </script>
+</body>
+</html>
